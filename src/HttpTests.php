@@ -1,13 +1,19 @@
 <?php
 
-namespace mariuszsienkiewicz\HttpTests;
+namespace Mariuszsienkiewicz\HttpTests;
 
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class HttpTests
 {
-    public function __construct()
+    public function __construct(HttpClientInterface $client)
     {
-        $this->client = HttpClient::create();
+
+    }
+
+    public function test()
+    {
+
     }
 }
