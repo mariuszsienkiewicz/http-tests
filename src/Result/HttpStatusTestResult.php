@@ -15,16 +15,12 @@ class HttpStatusTestResult implements TestResultInterface
     /** @var int|null */
     private ?int $statusCode;
 
-    /** @var ResponseInterface */
-    private ResponseInterface $response;
-
     /**
      * @param HttpStatusTest $httpStatusTest
      */
     public function __construct(HttpStatusTest $httpStatusTest) {
         $this->url = $httpStatusTest->getUrl();
         $this->statusCode = $httpStatusTest->getHttpStatusCode();
-        $this->response = $httpStatusTest->getResponse();
     }
 
     /**
@@ -44,22 +40,13 @@ class HttpStatusTestResult implements TestResultInterface
     }
 
     /**
-     * @return ResponseInterface
-     */
-    public function getResponse(): ResponseInterface
-    {
-        return $this->response;
-    }
-
-    /**
      * @return array
      */
     public function getAsArray(): array
     {
         return array(
             'url' => $this->getUrl(),
-            'statusCode' => $this->getStatusCode(),
-            'response' => $this->getResponse()
+            'statusCode' => $this->getStatusCode()
         );
     }
 }

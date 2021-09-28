@@ -42,7 +42,7 @@ class StringTest implements TestInterface
     public function runTest(): void
     {
         $searchResult = null;
-        $this->logger->log('tetestestestst');
+
         try {
             $response = $this->client->request('GET', $this->url);
 
@@ -56,10 +56,11 @@ class StringTest implements TestInterface
                 $searchResult = stristr($content, $this->string);
             }
         } catch (TransportExceptionInterface $e) {
-
+            // log
         }
 
         $this->stringHasBeenFound = false !== $searchResult;
+        $this->result = false !== $searchResult;
     }
 
     public function getResult()

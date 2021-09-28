@@ -2,13 +2,18 @@
 
 namespace Mariuszsienkiewicz\HttpTests;
 
+use Mariuszsienkiewicz\HttpTests\Exception\NetworkException;
+use Mariuszsienkiewicz\HttpTests\Request\Url;
 use Mariuszsienkiewicz\HttpTests\Tests\TestInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
-class HttpTests implements LoggerAwareInterface
+class HttpTests implements HttpTestsInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
@@ -38,14 +43,25 @@ class HttpTests implements LoggerAwareInterface
 
     /**
      * @param TestInterface $test
+     *
+     * @throws NetworkException
      * @return mixed
      */
     public function test(TestInterface $test)
     {
-        $this->logger->info('test');
-        $test->setHttpClient($this->httpClient);
-        $test->runTest();
+        try {
+            $response = $this->httpClient->request($test->getMethod(), $test->getUrl());
 
-        return $test->getResult();
+            $test->setResponse($response);
+            $test->runTest();
+
+            return $test->getResult();
+        } catch (NetworkException $e) {
+            if ($this->logger) {
+                $this->logger->log(LogLevel::ERROR, $e->getMessage());
+            }
+        }
+
+        return null;
     }
 }
