@@ -4,25 +4,20 @@ namespace Mariuszsienkiewicz\HttpTests\Request;
 
 class RequestCache
 {
-    /** @var array $cache */
-    private array $cache = array();
+    private array $cache = [];
 
-    /**
-     * @param Request $request
-     */
     public function add(Request $request)
     {
         if (!array_key_exists($request->getUrl()->getUrl(), $this->cache)) {
-            $newCache = array(
-                $request->getUrl()->getUrl() => $request->getResponse()
-            );
+            $newCache = [
+                $request->getUrl()->getUrl() => $request->getResponse(),
+            ];
 
             $this->cache = array_merge($this->cache, $newCache);
         }
     }
 
     /**
-     * @param Url $url
      * @return null
      */
     public function get(Url $url)

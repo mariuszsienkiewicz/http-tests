@@ -9,11 +9,8 @@ use Mariuszsienkiewicz\HttpTests\Request\Url;
 use Mariuszsienkiewicz\HttpTests\Tests\TestInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class HttpTests implements HttpTestsInterface, LoggerAwareInterface
 {
@@ -22,34 +19,28 @@ class HttpTests implements HttpTestsInterface, LoggerAwareInterface
     /** @var HttpClientInterface */
     private $httpClient;
 
-    /**
-     * @param HttpClientInterface $httpClient
-     */
     public function __construct(HttpClientInterface $httpClient)
     {
         $this->httpClient = $httpClient;
     }
 
     /**
-     * @param HttpClientInterface|null $httpClient
      * @return HttpTests
      */
     public static function create(?HttpClientInterface $httpClient = null)
     {
-        if ($httpClient != null) {
+        if (null != $httpClient) {
             return new HttpTests($httpClient);
         }
 
         return new HttpTests(HttpClient::create());
     }
 
-    /**
-     * @param array $tests
-     */
-    public function testMultiple(array $tests) {
+    public function testMultiple(array $tests)
+    {
         $requestCache = new RequestCache();
 
-        $httpTests = array();
+        $httpTests = [];
 
         /** @var TestInterface $test */
         foreach ($tests as $test) {
@@ -76,9 +67,8 @@ class HttpTests implements HttpTestsInterface, LoggerAwareInterface
     }
 
     /**
-     * @param TestInterface $test
-     *
      * @throws NetworkException
+     *
      * @return mixed
      */
     public function test(TestInterface $test)

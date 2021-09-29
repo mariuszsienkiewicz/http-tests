@@ -6,21 +6,14 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class Request
 {
-
-    /** @var Url $url */
+    /** @var Url */
     private $url;
 
-    /** @var string $method */
     private string $method;
 
-    /** @var ResponseInterface $response */
+    /** @var ResponseInterface */
     private $response;
 
-    /**
-     * @param Url $url
-     * @param string $method
-     * @param ResponseInterface $response
-     */
     public function __construct(Url $url, string $method, ResponseInterface $response)
     {
         $this->url = $url;
@@ -28,25 +21,16 @@ class Request
         $this->response = $response;
     }
 
-    /**
-     * @return Url
-     */
     public function getUrl(): Url
     {
         return $this->url;
     }
 
-    /**
-     * @return string
-     */
     public function getMethod(): string
     {
         return $this->method;
     }
 
-    /**
-     * @return ResponseInterface
-     */
     public function getResponse(): ResponseInterface
     {
         return $this->response;

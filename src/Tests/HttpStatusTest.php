@@ -2,34 +2,24 @@
 
 namespace Mariuszsienkiewicz\HttpTests\Tests;
 
-use Mariuszsienkiewicz\HttpTests\Exception\NoResponseObjectException;
-use Mariuszsienkiewicz\HttpTests\Tests\TestInterface;
-use Mariuszsienkiewicz\HttpTests\Result\HttpStatusTestResult;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
-use Symfony\Component\Asset\Package;
-use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Mariuszsienkiewicz\HttpTests\Exception\NetworkException;
+use Mariuszsienkiewicz\HttpTests\Exception\NoResponseObjectException;
+use Mariuszsienkiewicz\HttpTests\Result\HttpStatusTestResult;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class HttpStatusTest implements TestInterface
 {
-
-    /** @var string */
     private string $url;
 
-    /** @var int|null */
     private ?int $httpStatusCode;
 
-    /** @var ResponseInterface $response */
+    /** @var ResponseInterface */
     private $response;
 
-    /** @var HttpStatusTestResult $result */
+    /** @var HttpStatusTestResult */
     private $result;
 
-    /** @var string $method */
     private string $method = 'GET';
 
     public function __construct(string $url)
@@ -45,7 +35,7 @@ class HttpStatusTest implements TestInterface
     public function runTest(): void
     {
         if (!$this->response) {
-            throw new NoResponseObjectException("Response has not been set.");
+            throw new NoResponseObjectException('Response has not been set.');
         }
 
         try {
@@ -53,37 +43,25 @@ class HttpStatusTest implements TestInterface
         } catch (TransportExceptionInterface $exception) {
             throw new NetworkException();
         }
-        
+
         $this->httpStatusCode = $responseCode;
     }
 
-    /**
-     * @param ResponseInterface $response
-     */
     public function setResponse(ResponseInterface $response): void
     {
         $this->response = $response;
     }
 
-    /**
-     * @return string
-     */
     public function getUrl(): string
     {
         return $this->url;
     }
 
-    /**
-     * @return string
-     */
     public function getMethod(): string
     {
         return $this->method;
     }
 
-    /**
-     * @return HttpStatusTestResult
-     */
     public function getResult(): HttpStatusTestResult
     {
         if (!$this->result) {
@@ -93,13 +71,11 @@ class HttpStatusTest implements TestInterface
         return $this->result;
     }
 
-    public function createResult() {
+    public function createResult()
+    {
         $this->result = new HttpStatusTestResult($this);
     }
 
-    /**
-     * @return int|null
-     */
     public function getHttpStatusCode(): ?int
     {
         return $this->httpStatusCode;
