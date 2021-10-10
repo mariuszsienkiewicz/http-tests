@@ -8,7 +8,7 @@ use Mariuszsienkiewicz\HttpTests\Result\HttpStatusTestResult;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
-class HttpStatusTest implements TestInterface
+class HttpStatusPicker implements TestInterface
 {
     private string $url;
 
