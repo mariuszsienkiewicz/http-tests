@@ -1,10 +1,13 @@
 <?php
 
-namespace Mariuszsienkiewicz\HttpTests\Tests;
+namespace Mariuszsienkiewicz\HttpTests\Types;
 
 use Mariuszsienkiewicz\HttpTests\Exception\NoResponseObjectException;
 use Mariuszsienkiewicz\HttpTests\Result\StringTestResult;
 use Psr\Log\LoggerAwareTrait;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
@@ -12,24 +15,24 @@ class StringTest implements TestInterface
 {
     use LoggerAwareTrait;
 
-    private string $url;
-
+    /** @var string */
     private string $string;
 
     /** @var ResponseInterface */
-    private $response;
+    private ResponseInterface $response;
 
+    /** @var bool */
     private bool $stringHasBeenFound;
 
-    /** @var StringTestResult */
-    private $result;
-
+    /** @var string $method */
     private string $method = 'GET';
 
-    public function __construct(string $url, string $stringToTest)
+    /**
+     * @param string $stringToFind
+     */
+    public function __construct(string $stringToFind)
     {
-        $this->url = $url;
-        $this->string = $stringToTest;
+        $this->string = $stringToFind;
     }
 
     /**
@@ -50,40 +53,31 @@ class StringTest implements TestInterface
             }
         } catch (TransportExceptionInterface $e) {
             // log
+        } catch (ClientExceptionInterface | ServerExceptionInterface | RedirectionExceptionInterface $e) {
         }
 
         $this->stringHasBeenFound = false !== $searchResult;
     }
 
+    /**
+     * @return bool
+     */
     public function isStringHasBeenFound(): bool
     {
         return $this->stringHasBeenFound;
     }
 
-    public function getResult(): StringTestResult
-    {
-        if (!$this->result) {
-            $this->createResult();
-        }
-
-        return $this->result;
-    }
-
-    public function createResult()
-    {
-        $this->result = new StringTestResult($this);
-    }
-
-    public function getUrl(): string
-    {
-        return $this->url;
-    }
-
+    /**
+     * @return string
+     */
     public function getMethod(): string
     {
         return $this->method;
     }
 
+    /**
+     * @param ResponseInterface $response
+     */
     public function setResponse(ResponseInterface $response): void
     {
         $this->response = $response;

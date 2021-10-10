@@ -2,14 +2,14 @@
 
 namespace Mariuszsienkiewicz\HttpTests;
 
-use Mariuszsienkiewicz\HttpTests\Exception\NetworkException;
 use Mariuszsienkiewicz\HttpTests\Request\Request;
 use Mariuszsienkiewicz\HttpTests\Request\RequestCache;
 use Mariuszsienkiewicz\HttpTests\Request\Url;
-use Mariuszsienkiewicz\HttpTests\Tests\TestInterface;
+use Mariuszsienkiewicz\HttpTests\Types\TestInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class HttpTests implements HttpTestsInterface, LoggerAwareInterface
@@ -17,7 +17,7 @@ class HttpTests implements HttpTestsInterface, LoggerAwareInterface
     use LoggerAwareTrait;
 
     /** @var HttpClientInterface */
-    private $httpClient;
+    private HttpClientInterface $httpClient;
 
     public function __construct(HttpClientInterface $httpClient)
     {
@@ -25,9 +25,10 @@ class HttpTests implements HttpTestsInterface, LoggerAwareInterface
     }
 
     /**
+     * @param HttpClientInterface|null $httpClient
      * @return HttpTests
      */
-    public static function create(?HttpClientInterface $httpClient = null)
+    public static function create(?HttpClientInterface $httpClient = null): HttpTests
     {
         if (null != $httpClient) {
             return new HttpTests($httpClient);
@@ -36,48 +37,46 @@ class HttpTests implements HttpTestsInterface, LoggerAwareInterface
         return new HttpTests(HttpClient::create());
     }
 
-    public function testMultiple(array $tests)
+    public function runTests(string $url, array $tests)
     {
         $requestCache = new RequestCache();
 
-        $httpTests = [];
+        $results = [];
 
         /** @var TestInterface $test */
         foreach ($tests as $test) {
-            $url = new Url($test->getUrl());
-            $response = null;
+            try {
+                $response = null;
 
-            if (!$requestCache->isInCache($url)) {
-                $response = $this->httpClient->request($test->getMethod(), $test->getUrl());
+                if (!$requestCache->isInCache($url)) {
+                    $response = $this->httpClient->request($test->getMethod(), $url);
 
-                $request = new Request($url, $test->getMethod(), $response);
-                $requestCache->add($request);
-            } else {
-                $response = $requestCache->get($url);
+                    $request = new Request($url, $test->getMethod(), $response);
+                    $requestCache->add($request);
+                } else {
+                    $response = $requestCache->get($url);
+                }
+
+                $test->setResponse($response);
+                $test->runTest();
+
+                $result = $test;
+                array_push($results, $result);
+            } catch (TransportExceptionInterface $exception) {
+                error_log($exception);
             }
-
-            $test->setResponse($response);
-            $test->runTest();
-
-            $result = $test->getResult()->getAsArray();
-            array_push($httpTests, $result);
         }
 
-        return $httpTests;
+        return $results;
     }
 
-    /**
-     * @throws NetworkException
-     *
-     * @return mixed
-     */
-    public function test(TestInterface $test)
+    public function runTest(string $url, TestInterface $test): TestInterface
     {
-        $response = $this->httpClient->request($test->getMethod(), $test->getUrl());
+        $response = $this->httpClient->request($test->getMethod(), $url);
 
         $test->setResponse($response);
         $test->runTest();
 
-        return $test->getResult();
+        return $test;
     }
 }

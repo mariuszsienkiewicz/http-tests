@@ -1,6 +1,6 @@
 <?php
 
-namespace Mariuszsienkiewicz\HttpTests\Tests;
+namespace Mariuszsienkiewicz\HttpTests\Types;
 
 use Mariuszsienkiewicz\HttpTests\Exception\NetworkException;
 use Mariuszsienkiewicz\HttpTests\Exception\NoResponseObjectException;
@@ -17,15 +17,7 @@ class HttpStatusTest implements TestInterface
     /** @var ResponseInterface */
     private $response;
 
-    /** @var HttpStatusTestResult */
-    private $result;
-
     private string $method = 'GET';
-
-    public function __construct(string $url)
-    {
-        $this->url = $url;
-    }
 
     /**
      * Get status code.
@@ -52,28 +44,9 @@ class HttpStatusTest implements TestInterface
         $this->response = $response;
     }
 
-    public function getUrl(): string
-    {
-        return $this->url;
-    }
-
     public function getMethod(): string
     {
         return $this->method;
-    }
-
-    public function getResult(): HttpStatusTestResult
-    {
-        if (!$this->result) {
-            $this->createResult();
-        }
-
-        return $this->result;
-    }
-
-    public function createResult()
-    {
-        $this->result = new HttpStatusTestResult($this);
     }
 
     public function getHttpStatusCode(): ?int
