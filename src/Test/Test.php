@@ -4,10 +4,15 @@ namespace Mariuszsienkiewicz\HttpTests\Test;
 
 abstract class Test
 {
-    public function toArray(): array
+    public function asArray(): array
     {
         return array(
-            $this->getResult()
+            "result" => $this->getResult()
         );
+    }
+
+    public function getResult()
+    {
+        return $this->getResult();
     }
 }

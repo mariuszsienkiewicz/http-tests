@@ -4,10 +4,15 @@ namespace Mariuszsienkiewicz\HttpTests\Picker;
 
 abstract class Picker
 {
-    public function toArray(): array
+    public function asArray(): array
     {
         return array(
-            $this->getPicked()
+            "value" => $this->getPicked()
         );
+    }
+
+    public function getResult()
+    {
+        return $this->getPicked();
     }
 }
