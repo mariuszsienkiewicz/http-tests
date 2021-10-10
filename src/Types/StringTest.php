@@ -38,7 +38,7 @@ class StringTest implements TestInterface
     /**
      * @throws NoResponseObjectException
      */
-    public function runTest(): void
+    public function run(): void
     {
         if (!$this->response) {
             throw new NoResponseObjectException('Response has not been set.');
@@ -62,7 +62,7 @@ class StringTest implements TestInterface
     /**
      * @return bool
      */
-    public function isStringHasBeenFound(): bool
+    public function getResult(): bool
     {
         return $this->stringHasBeenFound;
     }

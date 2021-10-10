@@ -8,23 +8,24 @@ use Mariuszsienkiewicz\HttpTests\Result\HttpStatusTestResult;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
-class HttpStatusPicker implements TestInterface
+class HttpStatusPicker implements PickerInterface
 {
-    private string $url;
-
+    /** @var int|null */
     private ?int $httpStatusCode;
 
     /** @var ResponseInterface */
-    private $response;
+    private ResponseInterface $response;
 
+    /** @var string */
     private string $method = 'GET';
 
     /**
      * Get status code.
      *
-     * @throws TransportExceptionInterface
+     * @throws NetworkException
+     * @throws NoResponseObjectException
      */
-    public function runTest(): void
+    public function run(): void
     {
         if (!$this->response) {
             throw new NoResponseObjectException('Response has not been set.');
@@ -33,7 +34,7 @@ class HttpStatusPicker implements TestInterface
         try {
             $responseCode = $this->response->getStatusCode();
         } catch (TransportExceptionInterface $exception) {
-            throw new NetworkException();
+            throw new NetworkException($exception->getMessage());
         }
 
         $this->httpStatusCode = $responseCode;
@@ -49,7 +50,7 @@ class HttpStatusPicker implements TestInterface
         return $this->method;
     }
 
-    public function getHttpStatusCode(): ?int
+    public function getPicked(): ?int
     {
         return $this->httpStatusCode;
     }

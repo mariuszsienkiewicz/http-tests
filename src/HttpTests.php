@@ -5,6 +5,7 @@ namespace Mariuszsienkiewicz\HttpTests;
 use Mariuszsienkiewicz\HttpTests\Request\Request;
 use Mariuszsienkiewicz\HttpTests\Request\RequestCache;
 use Mariuszsienkiewicz\HttpTests\Request\Url;
+use Mariuszsienkiewicz\HttpTests\Types\RunnableInterface;
 use Mariuszsienkiewicz\HttpTests\Types\TestInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -19,6 +20,9 @@ class HttpTests implements HttpTestsInterface, LoggerAwareInterface
     /** @var HttpClientInterface */
     private HttpClientInterface $httpClient;
 
+    /**
+     * @param HttpClientInterface $httpClient
+     */
     public function __construct(HttpClientInterface $httpClient)
     {
         $this->httpClient = $httpClient;
@@ -37,13 +41,18 @@ class HttpTests implements HttpTestsInterface, LoggerAwareInterface
         return new HttpTests(HttpClient::create());
     }
 
-    public function runTests(string $url, array $tests)
+    /**
+     * @param string $url
+     * @param array $tests
+     * @return array
+     */
+    public function runTests(string $url, array $tests): array
     {
         $requestCache = new RequestCache();
 
         $results = [];
 
-        /** @var TestInterface $test */
+        /** @var RunnableInterface $test */
         foreach ($tests as $test) {
             try {
                 $response = null;
@@ -58,7 +67,7 @@ class HttpTests implements HttpTestsInterface, LoggerAwareInterface
                 }
 
                 $test->setResponse($response);
-                $test->runTest();
+                $test->run();
 
                 $result = $test;
                 array_push($results, $result);
@@ -70,12 +79,18 @@ class HttpTests implements HttpTestsInterface, LoggerAwareInterface
         return $results;
     }
 
-    public function runTest(string $url, TestInterface $test): TestInterface
+    /**
+     * @param string $url
+     * @param TestInterface $test
+     * @return TestInterface
+     * @throws TransportExceptionInterface
+     */
+    public function runTest(string $url, RunnableInterface $test): RunnableInterface
     {
         $response = $this->httpClient->request($test->getMethod(), $url);
 
         $test->setResponse($response);
-        $test->runTest();
+        $test->run();
 
         return $test;
     }

@@ -2,13 +2,12 @@
 
 namespace Mariuszsienkiewicz\HttpTests\Types;
 
-use Symfony\Contracts\HttpClient\ResponseInterface;
-
-interface TestInterface
+interface TestInterface extends RunnableInterface
 {
-    public function runTest();
-
-    public function setResponse(ResponseInterface $response): void;
-
-    public function getMethod(): string;
+    /**
+     * Return the result of the test.
+     *
+     * @return mixed
+     */
+    public function getResult();
 }
