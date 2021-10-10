@@ -2,14 +2,14 @@
 
 namespace Mariuszsienkiewicz\HttpTests;
 
-use Mariuszsienkiewicz\HttpTests\Types\TestInterface;
+use Mariuszsienkiewicz\HttpTests\Types\RunnableInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 interface HttpTestsInterface
 {
     public static function create(HttpClientInterface $httpClient = null);
 
-    public function runTest(string $url, TestInterface $test);
+    public function run(string $url, RunnableInterface $test);
 
-    public function runTests(string $url, array $tests);
+    public function runMultiple(string $url, array $tests);
 }

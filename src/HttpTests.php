@@ -5,8 +5,9 @@ namespace Mariuszsienkiewicz\HttpTests;
 use Mariuszsienkiewicz\HttpTests\Request\Request;
 use Mariuszsienkiewicz\HttpTests\Request\RequestCache;
 use Mariuszsienkiewicz\HttpTests\Request\Url;
+use Mariuszsienkiewicz\HttpTests\Picker\PickerInterface;
 use Mariuszsienkiewicz\HttpTests\Types\RunnableInterface;
-use Mariuszsienkiewicz\HttpTests\Types\TestInterface;
+use Mariuszsienkiewicz\HttpTests\Test\TestInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\HttpClient\HttpClient;
@@ -46,13 +47,13 @@ class HttpTests implements HttpTestsInterface, LoggerAwareInterface
      * @param array $tests
      * @return array
      */
-    public function runTests(string $url, array $tests): array
+    public function runMultiple(string $url, array $tests): array
     {
         $requestCache = new RequestCache();
 
         $results = [];
 
-        /** @var RunnableInterface $test */
+        /** @var TestInterface|RunnableInterface|PickerInterface $test */
         foreach ($tests as $test) {
             try {
                 $response = null;
@@ -85,7 +86,7 @@ class HttpTests implements HttpTestsInterface, LoggerAwareInterface
      * @return TestInterface
      * @throws TransportExceptionInterface
      */
-    public function runTest(string $url, RunnableInterface $test): RunnableInterface
+    public function run(string $url, RunnableInterface $test): RunnableInterface
     {
         $response = $this->httpClient->request($test->getMethod(), $url);
 
