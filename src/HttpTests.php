@@ -6,6 +6,8 @@ use Mariuszsienkiewicz\HttpTests\Request\Request;
 use Mariuszsienkiewicz\HttpTests\Request\RequestCache;
 use Mariuszsienkiewicz\HttpTests\Request\Url;
 use Mariuszsienkiewicz\HttpTests\Picker\PickerInterface;
+use Mariuszsienkiewicz\HttpTests\Result\Result;
+use Mariuszsienkiewicz\HttpTests\Result\ResultManager;
 use Mariuszsienkiewicz\HttpTests\Types\RunnableInterface;
 use Mariuszsienkiewicz\HttpTests\Test\TestInterface;
 use Psr\Log\LoggerAwareInterface;
@@ -45,13 +47,13 @@ class HttpTests implements HttpTestsInterface, LoggerAwareInterface
     /**
      * @param string $url
      * @param array $tests
-     * @return array
+     * @return Result
      */
-    public function runMultiple(string $url, array $tests): array
+    public function runMultiple(string $url, array $tests): ResultManager
     {
         $requestCache = new RequestCache();
 
-        $results = [];
+        $results = new ResultManager();
 
         /** @var TestInterface|RunnableInterface|PickerInterface $test */
         foreach ($tests as $test) {
@@ -70,8 +72,9 @@ class HttpTests implements HttpTestsInterface, LoggerAwareInterface
                 $test->setResponse($response);
                 $test->run();
 
-                $result = $test;
-                array_push($results, $result);
+                $result = new Result($url, $test);
+
+                $results->add($result);
             } catch (TransportExceptionInterface $exception) {
                 error_log($exception);
             }
