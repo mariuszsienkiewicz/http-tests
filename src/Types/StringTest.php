@@ -3,7 +3,8 @@
 namespace Mariuszsienkiewicz\HttpTests\Types;
 
 use Mariuszsienkiewicz\HttpTests\Exception\NoResponseObjectException;
-use Mariuszsienkiewicz\HttpTests\Result\StringTestResult;
+use Mariuszsienkiewicz\HttpTests\Test\Test;
+use Mariuszsienkiewicz\HttpTests\Test\TestInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -11,7 +12,7 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
-class StringTest implements TestInterface
+class StringTest extends Test implements TestInterface
 {
     use LoggerAwareTrait;
 

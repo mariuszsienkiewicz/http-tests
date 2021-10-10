@@ -1,6 +1,8 @@
 <?php
 
-namespace Mariuszsienkiewicz\HttpTests\Types;
+namespace Mariuszsienkiewicz\HttpTests\Test;
+
+use Mariuszsienkiewicz\HttpTests\Types\RunnableInterface;
 
 interface TestInterface extends RunnableInterface
 {

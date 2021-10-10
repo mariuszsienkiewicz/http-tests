@@ -4,11 +4,13 @@ namespace Mariuszsienkiewicz\HttpTests\Types;
 
 use Mariuszsienkiewicz\HttpTests\Exception\NetworkException;
 use Mariuszsienkiewicz\HttpTests\Exception\NoResponseObjectException;
+use Mariuszsienkiewicz\HttpTests\Picker\PickerInterface;
 use Mariuszsienkiewicz\HttpTests\Result\HttpStatusTestResult;
+use Mariuszsienkiewicz\HttpTests\Picker\Picker;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
-class HttpStatusPicker implements PickerInterface
+class HttpStatusPicker extends Picker implements PickerInterface
 {
     /** @var int|null */
     private ?int $httpStatusCode;
@@ -20,8 +22,6 @@ class HttpStatusPicker implements PickerInterface
     private string $method = 'GET';
 
     /**
-     * Get status code.
-     *
      * @throws NetworkException
      * @throws NoResponseObjectException
      */

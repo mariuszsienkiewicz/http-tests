@@ -4,8 +4,14 @@ namespace Mariuszsienkiewicz\HttpTests\Request;
 
 class RequestCache
 {
+    /** @var array */
     private array $cache = [];
 
+    /**
+     * Add response to the cache if it is not already there.
+     *
+     * @param Request $request
+     */
     public function add(Request $request)
     {
         if (!array_key_exists($request->getUrl(), $this->cache)) {
@@ -18,6 +24,8 @@ class RequestCache
     }
 
     /**
+     * Get response from cache by url.
+     *
      * @return null
      */
     public function get(string $url)
@@ -29,6 +37,12 @@ class RequestCache
         }
     }
 
+    /**
+     * Check if the response (identified by url) has already been cached.
+     *
+     * @param string $url
+     * @return bool
+     */
     public function isInCache(string $url): bool
     {
         return array_key_exists($url, $this->cache);

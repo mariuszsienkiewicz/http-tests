@@ -1,6 +1,8 @@
 <?php
 
-namespace Mariuszsienkiewicz\HttpTests\Types;
+namespace Mariuszsienkiewicz\HttpTests\Picker;
+
+use Mariuszsienkiewicz\HttpTests\Types\RunnableInterface;
 
 interface PickerInterface extends RunnableInterface
 {
